@@ -39,11 +39,145 @@
 5.GitHub Desktopでローカルリポジトリを作成
 GitHub Desktopの画面左上の「current Repositoly」→「Add」→「Add Existing Repositoly」を選択
 
+
 6.コミットする
 masterブランチへコミットする
 最初のコミットなので名前は「first commit」とする
 
+
 7.プッシュする
+commit後、右側に青色のボタンで「Publish repository」をクリック。
+リモートリポジトリを作成しましょう。
+注意：privateリポジトリのチェックは外す
+History（コミット履歴）にfirst commitがあれば大丈夫
+リモート（ブラウザ）にユーザー名/chat-appがあればOK
+https://github.com/
+
+
+8.アプリケーションの使用の記載
+README（リードミー）とは
+  ソフトウェアの仕様、規格、インストール方法などを文書化したアプリの説明書のようなもの
+  特徴：rails newを実行した際に自動で生成されマークダウンで記述される
+マークダウンとは
+  文書を記述するための計量マークアップ言語の一つ
+  マークダウンの記法 チートシート
+  https://qiita.com/Qiita/items/c686397e4a0f4f11683d
+  拡張子は.md
+
+
+9.READMEにDB設計
+  READMEに記述する内容は以下の5つ
+  ・テーブル名
+  ・カラム名
+  ・カラムの型
+  ・カラムのオプション（NOT NULL制約など）
+  ・アソシエーション
+
+
+10.READMEにテーブルの情報を記載
+README.mdに以下を記載する
+# テーブル設計
+
+## users テーブル
+
+| Column             | Type   | Options     |
+| ------------------ | ------ | ----------- |
+| name               | string | null: false |
+| email              | string | null: false, unique: true |
+| encrypted_password | string | null: false |
+
+## rooms テーブル
+
+| Column | Type   | Options     |
+| ------ | ------ | ----------- |
+| name   | string | null: false |
+
+## room_users テーブル
+
+| Column | Type       | Options                        |
+| ------ | ---------- | ------------------------------ |
+| user   | references | null: false, foreign_key: true |
+| room   | references | null: false, foreign_key: true |
+
+## messages テーブル
+
+| Column  | Type       | Options                        |
+| ------- | ---------- | ------------------------------ |
+| content | string     |                                |
+| user    | references | null: false, foreign_key: true |
+| room    | references | null: false, foreign_key: true |
+
+「users テーブル」に「encrypted_password」というカラムがあるが
+これは暗号化されたパスワードを意味する
+deviseを用いてユーザー管理機能をする場合
+「encrypted_password」というカラムにパスワードの情報が保存されるためこの表記にしました。
+また、「room_users テーブル」と「messages テーブル」の型にreferencesを使用している
+referenceとは他のテーブルから情報を参照する際に用いる型
+
+
+11.README1のアソシエーションを以下のように記載
+# テーブル設計
+
+## users テーブル
+
+| Column             | Type   | Options     |
+| ------------------ | ------ | ----------- |
+| name               | string | null: false |
+| email              | string | null: false, unique: true |
+| encrypted_password | string | null: false |
+
+### Association
+
+- has_many :room_users
+- has_many :rooms, through: :room_users
+- has_many :messages
+
+## rooms テーブル
+
+| Column | Type   | Options     |
+| ------ | ------ | ----------- |
+| name   | string | null: false |
+
+### Association
+
+- has_many :room_users
+- has_many :users, through: :room_users
+- has_many :messages
+
+## room_users テーブル
+
+| Column | Type       | Options                        |
+| ------ | ---------- | ------------------------------ |
+| user   | references | null: false, foreign_key: true |
+| room   | references | null: false, foreign_key: true |
+
+### Association
+
+- belongs_to :room
+- belongs_to :user
+
+## messages テーブル
+
+| Column  | Type       | Options                        |
+| ------- | ---------- | ------------------------------ |
+| content | string     |                                |
+| user    | references | null: false, foreign_key: true |
+| room    | references | null: false, foreign_key: true |
+
+### Association
+
+- belongs_to :room
+- belongs_to :user
+
+
+12.Dependabotについて
+GitHubでは、脆弱性を解消するためのバージョン更新用ブランチと
+プルリクエストが自動作成されることがあります。
+脆弱性が報告されているGemの使用を指摘すると共に
+新しいバージョンへの更新を促してくれるものs
+
+
+
 
 
 
