@@ -1,0 +1,52 @@
+目的
+  ChatAppの基礎を作成すること
+  不要なファイルを生成しないように設定すること
+  DBの設計をREADMEに記述すること
+  GitHubで管理すること
+
+1.アプリ作成
+  projectsディレクトリに移動
+  ターミナル  cd ~/projects
+  バージョンとデータベースを指定してRailsアプリケーションを作成
+  ターミナル  rails _7.0.0_ new chat-app -d mysql
+  作成したアプリケーションのディレクトリに移動
+  ターミナル cd chat-app
+
+2.database.ymlを編集（config/database.yml）
+  encodingの設定を以下のように変更する（１４行目）
+  encoding: utf8
+
+3.データベースを作成
+  ターミナル    rails db:create
+
+4.不要なファイルを生成しないように設定
+  自動で生成される不要なファイル以下4つ
+    ・生成したファイルに対応したスタイルシート
+    ・生成したファイルに対応したヘルパー
+    ・生成したファイルに対応したJavaScriptファイル
+    ・アプリケーションをテストするためのファイル
+    config/application.rbの中（21行目）に
+    config.generators do |g|
+      g.stylesheets false
+      g.javascripts false
+      g.helper false
+      g.test_framework false
+    end
+    を記入
+
+======================GitHub====================
+
+5.GitHub Desktopでローカルリポジトリを作成
+GitHub Desktopの画面左上の「current Repositoly」→「Add」→「Add Existing Repositoly」を選択
+
+6.コミットする
+masterブランチへコミットする
+最初のコミットなので名前は「first commit」とする
+
+7.プッシュする
+
+
+
+
+
+

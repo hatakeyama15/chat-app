@@ -1,0 +1,59 @@
+ChatAppの機能
+  ユーザー管理機能（新規登録・ログイン・ログアウト機能）
+  チャットルーム管理機能（新規作成・削除機能）
+  メッセージ管理機能（テキスト投稿・画像投稿機能）
+機能に必要なテーブル
+  usersテーブル
+    ユーザーの名前
+    ユーザーのEmail
+    ユーザーのパスワード
+  roomsテーブル
+    チャットルーム名
+  messagesテーブル
+    テキストの内容
+    画像の情報
+    メッセージ投稿時刻
+    メッセージ投稿をしたチャットルーム
+    メッセージ投稿をしたユーザー
+
+    usersテーブル 1 messagesテーブル 多
+    roomsテーブル 1  messagesテーブル 多
+    usersテーブル 多 roomsテーブル 多
+
+usersテーブルとroomsテーブルのように
+「多対多」は、関連するテーブルのidをお互いが複数持っている関係性
+
+中間テーブルは、多対多の関係にある2つのテーブルの間に使用するテーブル
+
+中間テーブルを使って紐付けするには
+has_manyメソッドのthroughオプションを使う
+例）app/models/photo.rb
+  class Photo < ApplicationRecord
+    has_many :photo_tags
+    has_many :tags, through: :photo_tags
+  end
+  紐づけるテーブルを
+  app/models/tag.rb
+  class Tag < ApplicationRecord
+    has_many :photo_tags
+    has_many :photos, through: :photo_tags
+  end
+  中間のテーブル
+  app/models/photo_tag.rb
+  class PhotoTag < ApplicationRecord
+    belongs_to :photo
+    belongs_to :tag
+  end
+
+  Draw.io Integration:vsコードのER図の拡張機能
+  使用方法
+  ER図を作成したいアプリケーションを開き、拡張子を「.dio」にして新規ファイルを作成します。
+  作成したら左下の「＋その他の図形」をクリック
+  「ER」にチェック
+  するとER図に適した図形を扱える
+  新たにテーブルを追加したい場合は「ER」から使用するテーブルの図形をドラッグ＆ドロップ
+  テーブルの端の緑色の丸をドラッグすると、テーブル間のリレーションを表現できます
+  以下の手順で画像として保存ができます
+まず、左上の「File」をクリックし、「Export」を選択します。
+次に、「.png」を選択します。
+最後に、保存場所を選択し、右下の「保存」より保存をしましょう
