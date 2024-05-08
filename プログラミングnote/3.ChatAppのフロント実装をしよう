@@ -223,6 +223,7 @@
   .wrapper {
     display: flex;
   }
+
   .side-bar {
     background-color: #253141;
     width: 300px;
@@ -232,39 +233,291 @@
   .side-bar-header {
     height: 100px;
     padding: 0 20px;
+    background-color: #253141;        # 追加
+    display: flex;       # 追加
+    justify-content: space-between;       # 追加
+    align-items: center;       # 追加
   }
+
+  .header-name a{       # 追加
+    font-size: 16px;       # 追加
+    color: #FAFAFA;       # 追加
+    text-decoration: none;       # 追加
+  }
+
+  .create-room a {       # 追加
+    font-size: 10px;       # 追加
+    border: 1px solid lightblue;       # 追加
+    padding: 14px;       # 追加
+    color: deepskyblue;       # 追加
+    text-decoration: none;       # 追加
+  }
+
+  中略
+
+  8-2.②のroomsの一覧を作成（app/views/messages/_side_bar.html.erb）
+  スクロール機能は、overflow: scrollを使用することで実装可能です。
+  overflowプロパティとは、
+  親要素の範囲から子要素がはみ出た時に、どのように表示するのかを設定するプロパティです。
+    #中略
+    <div class="rooms">
+      <div class="room">
+        <div class="room-name">
+          <a href="#">techroom1</a>
+        </div>
+      </div>
+      <div class="room">
+        <div class="room-name">
+          <a href="#">techroom2</a>
+        </div>
+      </div>
+    </div>
+
+  続いてstylesheetsを編集（app/assets/stylesheets/messages.css）
+  中略
 
   .rooms {
     background-color: #2F3E51;
     height: calc(100vh - 100px);
     padding: 0 20px;
+    overflow: scroll;
   }
 
-  .chat {
-    background-color: #FFFFFF;
-    width: calc(100vw - 300px);
+  .room {
+    padding: 20px 0 40px;
   }
 
-  .chat-header {
-    height: 100px;
-    padding: 0 40px;
+  .room-name a {
+    text-decoration: none;
+    color: white;
   }
 
-  .messages {
-    background-color: #FAFAFA;
-    height: calc(100vh - 100px - 90px);
-    padding: 46px 40px 0;
-  }
 
-  .form {
-    background-color: #DDDDDD;
-    height: 90px;
-    padding: 20px 40px;
-  }
-  
-  8-2.②のroomsの一覧を作成（app/views/messages/_side_bar.html.erb）
-  スクロール機能は、overflow: scrollを使用することで実装可能です。
-  
+  8-3.チャット画面の実装  ③・④・⑤
+  チャット画面を実装するコードは_main_chat.html.erbに記述します。
+
+    ③のチャットルームの概要を実装
+    <div class="chat-header">
+      <div class="left-header">
+        <div class="header-title">
+          hogefuga
+        </div>
+      </div>
+      <div class="right-header">
+        <div class="header-button">
+          <a href="#">チャットを終了する</a>
+        </div>
+      </div>
+    
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    中略
+    .chat-header {
+      height: 100px;
+      padding: 0 40px;
+      display: flex;                    # 追加
+      justify-content: space-between;           # 追加
+    }
+
+    .header-title {           # 追加
+      color: #333;           # 追加
+      font-size: 24px;           # 追加
+      margin-top: 36px;           # 追加
+    }
+
+    .header-button {           # 追加
+      margin-top: 40px;           # 追加
+    }           # 追加
+
+    .header-button a {           # 追加
+      text-decoration: none;           # 追加
+      border: 1px solid darkred;           # 追加
+      color: darkred;           # 追加
+    }           # 追加
+
+    ④メッセージ一覧機能の実装
+    チャット画面中央にメッセージ一覧を表示できるようにします。
+    下記を追加する
+    <div class="messages">
+      <div class="message">
+        <div class="upper-message">
+          <div class="message-user">
+            Tom
+          </div>
+          <div class="message-date">
+            2020/3/31(Wed) 12:43:30
+          </div>
+        </div>
+        <div class="lower-message">
+          <div class="message-content">
+            おはよう
+          </div>
+        </div>
+      </div>
+
+      <div class="message">
+        <div class="upper-message">
+          <div class="message-user">
+            Tom
+          </div>
+          <div class="message-date">
+            2020/3/31(Wed) 12:47:30
+          </div>
+        </div>
+        <div class="lower-message">
+          <div class="message-content">
+            こんばんは
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    .messages {
+      background-color: #FAFAFA;
+      height: calc(100vh - 100px - 90px);
+      padding: 46px 40px 0;
+      overflow: scroll;
+    }
+
+    .message {
+      margin: 10px 0 0 0;
+    }
+
+    .upper-message{
+      display: flex;
+    }
+
+    .message-user {
+      color: #434a54;
+      font-size: 16px;
+    }
+
+    .message-date {
+      color: #999;
+      font-size: 12px;
+      padding-left: 10px;
+    }
+
+    .lower-message {
+      margin-top: 10px;
+    }
+
+    .message-content {
+      color: #434a54;
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+
+  8-4.⑤投稿フォームを実装（app/views/messages/_main_chat.html.erb）
+    投稿のフォームはテキストを投稿するフォームと画像選択フォームに分けて実装を行います。
+    <div class="form">
+      <div class="form-input">
+        <input class="form-message" placeholder= "type a message">
+      </div>
+      <input class="form-submit" type="submit" value="送信">
+    </div>
+    <input>のテキストボックス内にうっすらと文字を表示させたいときは
+    <input type="text" placeholder="表示させたい文字">
+    inputタグにtypeを指定しない場合、デフォルトでtype="text"が割り当てられます。
+
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    中略
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+      display: flex;
+    }
+
+    .form-input {
+      background-color: white;
+      width: 100%;
+    }
+
+    .form-message {
+      border: none;
+      height: 50px;
+      width: 100%;
+      padding-left: 10px;
+    }
+
+    .form-submit {
+      background-color: #38AEF0;
+      border: none;
+      color: white;
+      font-size: 16px;
+      height: 50px;
+      margin-left: 15px;
+      padding: 0 20px;
+    }
+
+    8-5
+    画像フォームの実装（app/views/messages/_main_chat.html.erb）
+    <div class="form">
+      <div class="form-input">
+        <input class="form-message" placeholder= "type a message">
+        <label class="form-image">
+          <span class="image-file">画像</span>
+          <input type="file" class="hidden">
+        </label>
+      </div>
+      <input class="form-submit" type="submit" value="送信">
+    </div>
+
+    続いてスタイルシートを編集（app/assets/stylesheets/messages.css）
+    中略
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+      display: flex;
+    }
+
+    .form-input {
+      background-color: white;
+      display: flex;
+      width: 100%;
+    }
+
+    .form-message {
+      border: none;
+      height: 50px;
+      width: 100%;
+      padding-left: 10px;
+    }
+
+    .form-submit {
+      background-color: #38AEF0;
+      border: none;
+      color: white;
+      font-size: 16px;
+      height: 50px;
+      margin-left: 15px;
+      padding: 0 20px;
+    }
+
+    .form-image {
+      font-size: 12px;
+      background-color: lightblue;
+      color: white;
+      padding: 12px;
+      width: 60px;
+      margin: 5px 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
+
+
+
+
+
+
+
 
 
 
