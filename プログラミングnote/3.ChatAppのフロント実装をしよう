@@ -1,0 +1,524 @@
+1.  ルーティングの設定（config/routes.rb）
+  ビューを実装するために仮のルーティングを設定します。
+  Rails.application.routes.draw do
+    # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+    # ↑↑上の記述は削除しましょう↑↑
+    root to: "messages#index"
+  end
+
+
+2.コントローラーとビューの設定
+  コントローラーとビューの２つを同時に作成する方法を使いましょう。
+    messagesコントローラーにindexアクションが作られる
+    viewsのmessagesフォルダにindex.html.erbファイルが作られる
+    以下のコマンドをchat-appディレクトリで実行
+    ターミナル：        rails g controller messages index 
+    できたかを確認する為
+    chat-appまでターミナルでパスを移動させ、rails sコマンドでサーバー起動
+    http://localhost:3000/  にアクセス
+    Message#index表示が出たらOK
+
+
+3.リセットcssの準備（app/views/layouts/application.html.erb）
+  ChatAppの実装では、メジャーなリセットCSSのひとつである「normalize.css」を使用します。
+  ＊30行目を追加する
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ChatApp</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+      <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+      <%= javascript_importmap_tags %>
+    </head>
+
+    <body>
+      <%= yield %>
+    </body>
+  </html>
+
+
+4.要素サイズの設定
+  paddingなどで、要素が意図しないサイズとなることがあります。
+  それに対処するためには、box-sizingプロパティが有効です。
+  たとえば、ある要素にwidth: 300pxを指定し、あわせてpadding: 0 20pxと
+  border: 2px solid #888を指定すると、横幅は300 + 20×2 + 2×2で合計344pxになります。
+  これでは、横幅300pxのつもりでレイアウトを作成したとき、表示が崩れてしまうでしょう。
+
+  このような場合、要素にbox-sizing: border-boxを適用し、
+  paddingやborderを指定してもボックスサイズに含まれるようにして、横幅を300pxに維持させます。
+
+  4-1.paddingなどでサイズが変わらないよう設定する（app/assets/stylesheets/application.css）
+  /* 
+  * 中略 
+  *= require_tree .
+  *= require_self
+  */
+
+  * { # アスタリスクは全てって意味
+    box-sizing: border-box; # 追加
+  }
+
+
+5.サイドバーとチャット画面のビューファイルを作成
+  5-1.HTMLファイルを作成
+    views/messagesフォルダーに以下の名前で2つのファイルを作成する。
+    ・_main_chat.html.erb
+    ・_side_bar.html.erb
+    
+  5-2.CSSファイルの作成(app/assets/stylesheets/messages.css)
+      messages.cssという名前でファイルを作成しましょう。
+
+  5-3.部分テンプレートを用いて、ファイルを分割しましょう（app/views/messages/index.html.erb）
+  app/views/messages/index.html.erbから、サイドバーとチャット画面の部分テンプレートを読み込むように設定します。
+  このとき、ファイル作成時に記述されていたものは削除しておきましょう。
+  <div class="wrapper">
+    <%= render "side_bar" %>
+    <%= render "main_chat" %>
+  </div>
+  ※ 部分テンプレートの読み込みなので、ファイル名先頭の「_」や拡張子は必要ないことに注意しましょう。
+
+  5-4._main_chat.html.erb と _side_bar.html.erbを確認用に表示
+    app/views/messages/_side_bar.html.erb には
+    ＜サイドバー＞  と1行目に入力
+    app/views/messages/_main_chat.html.erb  には
+    ＜チャット画面＞  と1行目に入力
+    記述できたら  項目2  の場所で確認
+
+
+6.ビューファイルの実装
+  6-1.ビューを二つに分割
+    app/views/messages/index.html.erb
+    <div class="wrapper">
+      <div class="side-bar">
+        <%= render "side_bar" %>
+      </div>
+      <div class="chat">
+        <%= render "main_chat" %>
+      </div>
+  </div>
+
+  6-2.stylesheetsを編集
+  app/assets/stylesheets/messages.css
+  .wrapper {
+    display: flex;
+  }
+  .side-bar {
+    background-color: #253141;
+    width: 300px;
+    height: 100vh;
+  }
+  .chat {
+    background-color: #FFFFFF;
+    width: calc(100vw - 300px);
+  }
+
+6-3._main_chatを編集（app/views/messages/_main_chat.html.erb）
+  <div class="chat-header">
+  </div>
+
+  <div class="messages">
+  </div>
+
+  <div class="form">
+  </div>
+
+6-4._side_barを編集（app/views/messages/_side_bar.html.erb）
+  <div class="side-bar-header">
+  </div>
+
+  <div class="rooms">
+  </div>
+
+6-5.stylesheetsを編集（app/assets/stylesheets/messages.css）
+  下記コードを追加
+  .side-bar-header {
+    height: 100px;
+  }
+  .rooms {
+    background-color: #2F3E51;
+    height: calc(100vh - 100px);
+  }
+
+  .chat-header {
+    height: 100px;
+  }
+  .messages {
+    background-color: #FAFAFA;
+    height: calc(100vh - 100px - 90px);
+  }
+  .form {
+    background-color: #DDDDDD;
+    height: 90px;
+  }
+
+  6-6.要素内の余白の設定
+    .wrapper {
+      display: flex;
+    }
+    .side-bar {
+      background-color: #253141;
+      width: 300px;
+      height: 100vh;
+    }
+
+    .side-bar-header {
+      height: 100px;
+      padding: 0 20px;
+    }
+
+    .rooms {
+      background-color: #2F3E51;
+      height: calc(100vh - 100px);
+      padding: 0 20px;
+    }
+
+    .chat {
+      background-color: #FFFFFF;
+      width: calc(100vw - 300px);
+    }
+
+    .chat-header {
+      height: 100px;
+      padding: 0 40px;
+    }
+
+    .messages {
+      background-color: #FAFAFA;
+      height: calc(100vh - 100px - 90px);
+      padding: 46px 40px 0;
+    }
+
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+    }
+
+7.パーツごとに分けて実装する
+  ①side-bar-header
+  ②rooms
+  ③chat-header
+  ④messages 
+  ⑤form
+
+8.サイドバーの実装①・②
+  8-1.ユーザー名とチャット作成のリンクを表示しましょう
+  まず、①の編集から（app/views/messages/_side_bar.html.erb）
+  <div class="side-bar-header">
+    <div class="header-name">
+      <a href="#">Tom</a>
+    </div>
+    <div class="create-room">
+      <a href="#">チャットを作成する</a>
+    </div>
+  </div>
+
+  <div class="rooms">
+  </div>
+  
+  続いてstylesheets（app/assets/stylesheets/messages.css）
+  .wrapper {
+    display: flex;
+  }
+
+  .side-bar {
+    background-color: #253141;
+    width: 300px;
+    height: 100vh;
+  }
+
+  .side-bar-header {
+    height: 100px;
+    padding: 0 20px;
+    background-color: #253141;        # 追加
+    display: flex;       # 追加
+    justify-content: space-between;       # 追加
+    align-items: center;       # 追加
+  }
+
+  .header-name a{       # 追加
+    font-size: 16px;       # 追加
+    color: #FAFAFA;       # 追加
+    text-decoration: none;       # 追加
+  }
+
+  .create-room a {       # 追加
+    font-size: 10px;       # 追加
+    border: 1px solid lightblue;       # 追加
+    padding: 14px;       # 追加
+    color: deepskyblue;       # 追加
+    text-decoration: none;       # 追加
+  }
+
+  中略
+
+  8-2.②のroomsの一覧を作成（app/views/messages/_side_bar.html.erb）
+  スクロール機能は、overflow: scrollを使用することで実装可能です。
+  overflowプロパティとは、
+  親要素の範囲から子要素がはみ出た時に、どのように表示するのかを設定するプロパティです。
+    #中略
+    <div class="rooms">
+      <div class="room">
+        <div class="room-name">
+          <a href="#">techroom1</a>
+        </div>
+      </div>
+      <div class="room">
+        <div class="room-name">
+          <a href="#">techroom2</a>
+        </div>
+      </div>
+    </div>
+
+  続いてstylesheetsを編集（app/assets/stylesheets/messages.css）
+  中略
+
+  .rooms {
+    background-color: #2F3E51;
+    height: calc(100vh - 100px);
+    padding: 0 20px;
+    overflow: scroll;
+  }
+
+  .room {
+    padding: 20px 0 40px;
+  }
+
+  .room-name a {
+    text-decoration: none;
+    color: white;
+  }
+
+
+  8-3.チャット画面の実装  ③・④・⑤
+  チャット画面を実装するコードは_main_chat.html.erbに記述します。
+
+    ③のチャットルームの概要を実装
+    <div class="chat-header">
+      <div class="left-header">
+        <div class="header-title">
+          hogefuga
+        </div>
+      </div>
+      <div class="right-header">
+        <div class="header-button">
+          <a href="#">チャットを終了する</a>
+        </div>
+      </div>
+    
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    中略
+    .chat-header {
+      height: 100px;
+      padding: 0 40px;
+      display: flex;                    # 追加
+      justify-content: space-between;           # 追加
+    }
+
+    .header-title {           # 追加
+      color: #333;           # 追加
+      font-size: 24px;           # 追加
+      margin-top: 36px;           # 追加
+    }
+
+    .header-button {           # 追加
+      margin-top: 40px;           # 追加
+    }           # 追加
+
+    .header-button a {           # 追加
+      text-decoration: none;           # 追加
+      border: 1px solid darkred;           # 追加
+      color: darkred;           # 追加
+    }           # 追加
+
+    ④メッセージ一覧機能の実装
+    チャット画面中央にメッセージ一覧を表示できるようにします。
+    下記を追加する
+    <div class="messages">
+      <div class="message">
+        <div class="upper-message">
+          <div class="message-user">
+            Tom
+          </div>
+          <div class="message-date">
+            2020/3/31(Wed) 12:43:30
+          </div>
+        </div>
+        <div class="lower-message">
+          <div class="message-content">
+            おはよう
+          </div>
+        </div>
+      </div>
+
+      <div class="message">
+        <div class="upper-message">
+          <div class="message-user">
+            Tom
+          </div>
+          <div class="message-date">
+            2020/3/31(Wed) 12:47:30
+          </div>
+        </div>
+        <div class="lower-message">
+          <div class="message-content">
+            こんばんは
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    .messages {
+      background-color: #FAFAFA;
+      height: calc(100vh - 100px - 90px);
+      padding: 46px 40px 0;
+      overflow: scroll;
+    }
+
+    .message {
+      margin: 10px 0 0 0;
+    }
+
+    .upper-message{
+      display: flex;
+    }
+
+    .message-user {
+      color: #434a54;
+      font-size: 16px;
+    }
+
+    .message-date {
+      color: #999;
+      font-size: 12px;
+      padding-left: 10px;
+    }
+
+    .lower-message {
+      margin-top: 10px;
+    }
+
+    .message-content {
+      color: #434a54;
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+
+  8-4.⑤投稿フォームを実装（app/views/messages/_main_chat.html.erb）
+    投稿のフォームはテキストを投稿するフォームと画像選択フォームに分けて実装を行います。
+    <div class="form">
+      <div class="form-input">
+        <input class="form-message" placeholder= "type a message">
+      </div>
+      <input class="form-submit" type="submit" value="送信">
+    </div>
+    <input>のテキストボックス内にうっすらと文字を表示させたいときは
+    <input type="text" placeholder="表示させたい文字">
+    inputタグにtypeを指定しない場合、デフォルトでtype="text"が割り当てられます。
+
+    続いてスタイルシート（app/assets/stylesheets/messages.css）
+    中略
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+      display: flex;
+    }
+
+    .form-input {
+      background-color: white;
+      width: 100%;
+    }
+
+    .form-message {
+      border: none;
+      height: 50px;
+      width: 100%;
+      padding-left: 10px;
+    }
+
+    .form-submit {
+      background-color: #38AEF0;
+      border: none;
+      color: white;
+      font-size: 16px;
+      height: 50px;
+      margin-left: 15px;
+      padding: 0 20px;
+    }
+
+    8-5
+    画像フォームの実装（app/views/messages/_main_chat.html.erb）
+    <div class="form">
+      <div class="form-input">
+        <input class="form-message" placeholder= "type a message">
+        <label class="form-image">
+          <span class="image-file">画像</span>
+          <input type="file" class="hidden">
+        </label>
+      </div>
+      <input class="form-submit" type="submit" value="送信">
+    </div>
+
+    続いてスタイルシートを編集（app/assets/stylesheets/messages.css）
+    中略
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+      display: flex;
+    }
+
+    .form-input {
+      background-color: white;
+      display: flex;
+      width: 100%;
+    }
+
+    .form-message {
+      border: none;
+      height: 50px;
+      width: 100%;
+      padding-left: 10px;
+    }
+
+    .form-submit {
+      background-color: #38AEF0;
+      border: none;
+      color: white;
+      font-size: 16px;
+      height: 50px;
+      margin-left: 15px;
+      padding: 0 20px;
+    }
+
+    .form-image {
+      font-size: 12px;
+      background-color: lightblue;
+      color: white;
+      padding: 12px;
+      width: 60px;
+      margin: 5px 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
