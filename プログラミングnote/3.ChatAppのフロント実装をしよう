@@ -10,5 +10,31 @@
   コントローラーとビューの２つを同時に作成する方法を使いましょう。
     messagesコントローラーにindexアクションが作られる
     viewsのmessagesフォルダにindex.html.erbファイルが作られる
-    以下のコマンドを実行
+    以下のコマンドをchat-appディレクトリで実行
     ターミナル：        rails g controller messages index 
+    できたかを確認する為
+    chat-appまでターミナルでパスを移動させ、rails sコマンドでサーバー起動
+    http://localhost:3000/  にアクセス
+    Message#index表示が出たらOK
+
+3.リセットcssの準備（app/views/layouts/application.html.erb）
+  ChatAppの実装では、メジャーなリセットCSSのひとつである「normalize.css」を使用します。
+  ＊30行目を追加する
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ChatApp</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+      <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+      <%= javascript_importmap_tags %>
+    </head>
+
+    <body>
+      <%= yield %>
+    </body>
+  </html>
+
+  
