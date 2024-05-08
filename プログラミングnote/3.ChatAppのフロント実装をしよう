@@ -37,4 +37,25 @@
     </body>
   </html>
 
-  
+4.要素サイズの設定
+  paddingなどで、要素が意図しないサイズとなることがあります。
+  それに対処するためには、box-sizingプロパティが有効です。
+  たとえば、ある要素にwidth: 300pxを指定し、あわせてpadding: 0 20pxと
+  border: 2px solid #888を指定すると、横幅は300 + 20×2 + 2×2で合計344pxになります。
+  これでは、横幅300pxのつもりでレイアウトを作成したとき、表示が崩れてしまうでしょう。
+
+  このような場合、要素にbox-sizing: border-boxを適用し、
+  paddingやborderを指定してもボックスサイズに含まれるようにして、横幅を300pxに維持させます。
+
+  4-1.paddingなどでサイズが変わらないよう設定する（app/assets/stylesheets/application.css）
+  /* 
+  * 中略 
+  *= require_tree .
+  *= require_self
+  */
+
+  * { # アスタリスクは全てって意味
+    box-sizing: border-box; # 追加
+  }
+
+
