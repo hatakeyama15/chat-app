@@ -88,7 +88,114 @@
     記述できたら  項目2  の場所で確認
 
 
+6.ビューファイルの実装
+  6-1.ビューを二つに分割
+    app/views/messages/index.html.erb
+    <div class="wrapper">
+      <div class="side-bar">
+        <%= render "side_bar" %>
+      </div>
+      <div class="chat">
+        <%= render "main_chat" %>
+      </div>
+  </div>
 
+  6-2.stylesheetsを編集
+  app/assets/stylesheets/messages.css
+  .wrapper {
+    display: flex;
+  }
+  .side-bar {
+    background-color: #253141;
+    width: 300px;
+    height: 100vh;
+  }
+  .chat {
+    background-color: #FFFFFF;
+    width: calc(100vw - 300px);
+  }
+
+6-3._main_chatを編集（app/views/messages/_main_chat.html.erb）
+  <div class="chat-header">
+  </div>
+
+  <div class="messages">
+  </div>
+
+  <div class="form">
+  </div>
+
+6-4._side_barを編集（app/views/messages/_side_bar.html.erb）
+  <div class="side-bar-header">
+  </div>
+
+  <div class="rooms">
+  </div>
+
+6-5.stylesheetsを編集（app/assets/stylesheets/messages.css）
+  下記コードを追加
+  .side-bar-header {
+    height: 100px;
+  }
+  .rooms {
+    background-color: #2F3E51;
+    height: calc(100vh - 100px);
+  }
+
+  .chat-header {
+    height: 100px;
+  }
+  .messages {
+    background-color: #FAFAFA;
+    height: calc(100vh - 100px - 90px);
+  }
+  .form {
+    background-color: #DDDDDD;
+    height: 90px;
+  }
+
+  6-6.要素内の余白の設定
+    .wrapper {
+      display: flex;
+    }
+    .side-bar {
+      background-color: #253141;
+      width: 300px;
+      height: 100vh;
+    }
+
+    .side-bar-header {
+      height: 100px;
+      padding: 0 20px;
+    }
+
+    .rooms {
+      background-color: #2F3E51;
+      height: calc(100vh - 100px);
+      padding: 0 20px;
+    }
+
+    .chat {
+      background-color: #FFFFFF;
+      width: calc(100vw - 300px);
+    }
+
+    .chat-header {
+      height: 100px;
+      padding: 0 40px;
+    }
+
+    .messages {
+      background-color: #FAFAFA;
+      height: calc(100vh - 100px - 90px);
+      padding: 46px 40px 0;
+    }
+
+    .form {
+      background-color: #DDDDDD;
+      height: 90px;
+      padding: 20px 40px;
+    }
 
 
 
