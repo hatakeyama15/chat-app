@@ -1,0 +1,14 @@
+1.  ルーティングの設定（config/routes.rb）
+  ビューを実装するために仮のルーティングを設定します。
+  Rails.application.routes.draw do
+    # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+    # ↑↑上の記述は削除しましょう↑↑
+    root to: "messages#index"
+  end
+
+2.コントローラーとビューの設定
+  コントローラーとビューの２つを同時に作成する方法を使いましょう。
+    messagesコントローラーにindexアクションが作られる
+    viewsのmessagesフォルダにindex.html.erbファイルが作られる
+    以下のコマンドを実行
+    ターミナル：        rails g controller messages index 
