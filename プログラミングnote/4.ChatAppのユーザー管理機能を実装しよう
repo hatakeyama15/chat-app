@@ -1,0 +1,11 @@
+1.deviceのインストール
+  ・ Gemfileにdeviseを記述する
+    Gemfileを開き末尾にgem 'devise'を記述
+  ・bundle installを行う
+    ターミナル： bundle install
+  ・rails s でサーバーの再起動
+  ・ コマンドでdeviseのインストールを行う
+    ターミナル： rails g devise:install
+  以下の2つのファイルを作成することができれば成功です。
+  config/initializers/devise.rb
+  config/locales/devise.en.yml
