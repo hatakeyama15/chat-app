@@ -9,3 +9,19 @@
   以下の2つのファイルを作成することができれば成功です。
   config/initializers/devise.rb
   config/locales/devise.en.yml
+
+  2.userモデルの作成
+    ・ターミナルで下記コマンドを実行
+    ターミナル：      rails g devise user
+  
+  3.マイグレートファイルでカラムの追加（db/migrate/20XXXXXXXXXXXX_devise_create_users.rb）
+  ・下記コードを7行目に追加（change関数の中）
+    t.string :name,               null: false
+    ※ null: falseと記述することにより、マイグレーション実行時に「nameカラム」は空の値を許可しないNOT NULL制約で作成されます。
+  ・ターミナルで反映する
+    ターミナル：        rails db:migrate
+
+    
+
+    
+

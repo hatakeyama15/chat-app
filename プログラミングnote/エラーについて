@@ -1,0 +1,20 @@
+db:migrateをしたら下記エラーが現れた場合
+  →既にusersテーブルが存在しているよって意味（8行目）
+  →このエラーは通常、既存のテーブルに対して新しいマイグレーションを作成した場合に発生します。
+== 20240509063309 DeviseCreateUsers: migrating ================================
+-- create_table(:users)
+rails aborted!
+StandardError: An error has occurred, all later migrations canceled: (StandardError)
+
+Mysql2::Error: Table 'users' already exists
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+
+Caused by:
+ActiveRecord::StatementInvalid: Mysql2::Error: Table 'users' already exists (ActiveRecord::StatementInvalid)
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+
+Caused by:
+Mysql2::Error: Table 'users' already exists (Mysql2::Error)
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+Tasks: TOP => db:migrate
+(See full trace by running task with --trace)
