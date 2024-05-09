@@ -85,14 +85,27 @@
 
           renderメソッド：renderは、呼び出すビューファイルを指定するメソッドです。
 
-          6-5. 更新成功後にページ遷移が行われるように実装しましょう（app/controllers/users_controller.rb）
-            updateメソッドの中に下記コードを記述
-            if current_user.update(user_params)
-              redirect_to root_path
-            else
-              render :edit, status: :unprocessable_entity
-            end
-            
+        6-5. 更新成功後にページ遷移が行われるように実装しましょう（app/controllers/users_controller.rb）
+          updateメソッドの中に下記コードを記述
+          if current_user.update(user_params)
+            redirect_to root_path
+          else
+            render :edit, status: :unprocessable_entity
+          end
+        7. サイドバーからユーザー編集ページへ遷移できるように実装しましょう（app/views/messages/_side_bar.html.erb）
+          <div class="side-bar-header">
+            <div class="header-name">
+              <%= link_to current_user.name, edit_user_path(current_user) %>  # 追加
+            </div>
+            <div class="create-room">
+              <a href="#">チャットを作成する</a>
+            </div>
+          </div>
+
+
+
+
+
 
 
 
