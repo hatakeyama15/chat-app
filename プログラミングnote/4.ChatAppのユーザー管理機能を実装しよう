@@ -50,6 +50,57 @@
             devise_parameter_sanitizer.permit(:sign_up, keys: [:name]) # 追加
           end
         end
+      
+      6.ユーザー情報編集機能
+        ・ユーザー編集画面が表示されるように、ルーティングとコントローラーを編集しましょう
+        6-1. ルーティング（config/routes.rb）
+          Rails.application.routes.draw do
+            devise_for :users
+            root to: "messages#index"
+            # ユーザー編集に必要なルーティングは、editとupdate
+            resources :users, only: [:edit, :update] # 追加
+
+          end
+        6-2. usersコントローラーの作成
+          ターミナル：rails g controller users
+        6-3. コントローラーの編集（app/controllers/users_controller.rb）
+          class UsersController < ApplicationController
+
+              def edit # 追加
+              end     # 追加
+
+            end
+        
+        6-4. 編集内容が更新されるように、コントローラーを編集しましょう
+        ・下記コードを追加
+          def update
+            current_user.update(user_params)  # user_paramsメソッドの呼び出し
+                                              # ユーザー情報が格納されているcurrent_userメソッドを使用して、ログインしているユーザーの情報を更新します
+          end
+
+          private
+          def user_params
+            params.require(:user).permit(:name, :email) # 「name」と「email」の編集を許可します。
+          end
+
+          renderメソッド：renderは、呼び出すビューファイルを指定するメソッドです。
+
+          6-5. 更新成功後にページ遷移が行われるように実装しましょう（app/controllers/users_controller.rb）
+            updateメソッドの中に下記コードを記述
+            if current_user.update(user_params)
+              redirect_to root_path
+            else
+              render :edit, status: :unprocessable_entity
+            end
+            
+
+
+
+          
+
+
+
+      
 
 
 
