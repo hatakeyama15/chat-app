@@ -102,6 +102,16 @@
             </div>
           </div>
 
+        8.ログアウト機能を実装しよう
+          ・ユーザー編集画面からログアウトできるようにしましょう（app/views/users/edit.html.erb）
+            ・ログアウト機能を実装しましょう
+            チャットページに戻るの上の行に下記コードを追加
+            <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: 'btn'%>
+
+
+
+
+
 
 
 
