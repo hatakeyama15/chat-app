@@ -5,6 +5,7 @@ db:migrateをしたら下記エラーが現れた場合
 -- create_table(:users)
 rails aborted!
 StandardError: An error has occurred, all later migrations canceled: (StandardError)
+
 Mysql2::Error: Table 'users' already exists
 /Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
 
