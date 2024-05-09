@@ -21,6 +21,16 @@
   ・ターミナルで反映する
     ターミナル：        rails db:migrate
 
+    4.deviseのビュー
+    ・ダウンロードして展開する
+    ・use-materialsフォルダを開けたらOK
+    ・chat-appフォルダのdeviceフォルダ・usersフォルダを「app/views」に移動
+    ・chat-appフォルダのuser.cssも「app/assets/stylesheets」の下に配置しましょう
+    
+
+
+
+
     
 
     
