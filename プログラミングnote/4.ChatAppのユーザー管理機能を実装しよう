@@ -26,7 +26,36 @@
     ・use-materialsフォルダを開けたらOK
     ・chat-appフォルダのdeviceフォルダ・usersフォルダを「app/views」に移動
     ・chat-appフォルダのuser.cssも「app/assets/stylesheets」の下に配置しましょう
-    
+
+    5.サインアップ・ログイン機能を実装
+    authenticate_user!（オウセンティケイト ユーザー）メソッド
+      ログイン状態によって表示するページを切り替えるdeviseのメソッドです。
+      ログインしていなければログイン画面に戻す
+
+    ・ログイン画面に遷移するように実装しましょう（app/controllers/application_controller.rb）
+      class ApplicationController < ActionController::Base
+        before_action :authenticate_user! # ログインしていなければログイン前に戻す
+      end
+      訳）before_action：事前に実行 authenticate_user!  ログイン確認を
+
+      ・ユーザーの名前をDBへ保存できるように設定しましょう
+        application_controller.rbファイルにnameカラムの保存ができるよう記述しましょう
+        class ApplicationController < ActionController::Base
+          before_action :authenticate_user!
+          before_action :configure_permitted_parameters, if: :devise_controller? # 追加
+          →訳）configure_permitted_parametersメソッドを呼び出す
+
+          private # 追加
+          def configure_permitted_parameters # 追加
+            devise_parameter_sanitizer.permit(:sign_up, keys: [:name]) # 追加
+          end
+        end
+
+
+
+
+
+
 
 
 
