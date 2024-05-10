@@ -3,4 +3,11 @@
     room.cssはapp/assets/stylesheets/ここに置く
     roomディレクトリはapp/views/に置く
   
-2.
+2.Roomモデルを作成
+  ・roomsテーブルを作成
+  ターミナル：        rails g model room
+  ・ファイルを生成したら（db/migrate/20XXXXXXXXXXXX_create_rooms.rb）に下記コードを記載
+      t.string :name, null: false
+  ・DBに反映する
+  ターミナル：        rails db:migrate
+  
