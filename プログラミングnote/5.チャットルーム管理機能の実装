@@ -110,6 +110,49 @@
   </select>
   <input name="room[user_ids][]" type="hidden" value=<%= current_user.id %>>
 
+14.チャットルーム保存機能を実装しよう
+  ・pry-railsをインストールしましょう（Gemfile）
+    gem 'pry-rails'
+  ・ターミナルでbundle installを実行
+  ターミナル：          bundle install
+  ・ローカルサーバーを再起動する
+  ターミナル：        control + c
+  ターミナル：        rails s
+  .送信されるデータの確認（app/controllers/rooms_controller.rb）
+  def create
+    binding.pry
+  end
+
+16.DBに値を保存できるようにコントローラーを編集しましょう
+  ・app/controllers/rooms_controller.rb
+  def create
+      @room = Room.new(room_params)
+      if @room.save
+        redirect_to root_path
+      else
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    private
+
+    def room_params
+      params.require(:room).permit(:name, user_ids: [])
+    end
+    書籍）user_ids: []という記述があります。
+    このように、配列に対して保存を許可したい場合は、キーに対し[]を値として記述します。
+
+17.バリデーションを設定しよう
+  ・roomモデルを以下のように編集しましょう。
+    validates :name, presence: true ＃追加
+
+    
+
+
+
+
+
+
 
 
 
