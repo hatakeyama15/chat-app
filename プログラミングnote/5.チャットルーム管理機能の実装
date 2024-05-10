@@ -163,6 +163,24 @@
     <%= link_to "チャットを作成する", new_room_path %>
   </div>
 
+19.ルートパスの指定を変更しよう
+  ・サイドバーのみの表示となるようにindexファイルを作成しましょう（app/views/rooms/index.html.erb）
+    ・<div class="wrapper">の下に下記コードを貼り付け
+    <div class='side-bar'>
+      <%= render "messages/side_bar" %>
+    </div>
+  </div>
+  ・トップページを編集しましょう
+    ルーティング設定を追加（config/routes.rb）
+    root to: "rooms#index"
+    コントローラーを追加（app/controllers/rooms_controller.rb）
+    def index
+    end
+
+
+
+
+
 
 
 
