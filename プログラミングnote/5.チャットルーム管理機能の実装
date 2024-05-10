@@ -1,0 +1,6 @@
+1.HTMLファイルとCSSファイルの準備をしよう
+  ・カリキュラムのファイルをダウンロードしてroom-materialsディレクトリの中のファイルを指定されて場所に置く
+    room.cssはapp/assets/stylesheets/ここに置く
+    roomディレクトリはapp/views/に置く
+  
+2.
