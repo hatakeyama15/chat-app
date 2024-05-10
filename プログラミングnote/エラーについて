@@ -1,0 +1,34 @@
+db:migrateをしたら下記エラーが現れた場合
+  →既にusersテーブルが存在しているよって意味（8行目）
+  →このエラーは通常、既存のテーブルに対して新しいマイグレーションを作成した場合に発生します。
+== 20240509063309 DeviseCreateUsers: migrating ================================
+-- create_table(:users)
+rails aborted!
+StandardError: An error has occurred, all later migrations canceled: (StandardError)
+
+Mysql2::Error: Table 'users' already exists
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+
+Caused by:
+ActiveRecord::StatementInvalid: Mysql2::Error: Table 'users' already exists (ActiveRecord::StatementInvalid)
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+
+Caused by:
+Mysql2::Error: Table 'users' already exists (Mysql2::Error)
+/Users/tc-user/projects/chat-app/db/migrate/20240509063309_devise_create_users.rb:5:in `change'
+Tasks: TOP => db:migrate
+(See full trace by running task with --trace)
+
+ActiveRecord::PendingMigrationError
+  →このエラーはusersテーブルを再度作ろうとしたことで出たエラーで
+    migrateで不要なファイルができてしまっていた
+    不要なファイルがあったことを確認するには
+    rails db:migrate:status
+    で現在のマイグレート状況を見る
+    不要なファイルがあった場合
+    # これにより、現在のデータベースが完全に削除されます。プロジェクトに紐づくデータベースとその中の全データ、構造が消去されます
+    rails db:drop
+    # このコマンドは新しいデータベースを作成します。
+    rails db:create
+    # 新しく作成されたデータベースに対し、db/migrateディレクトリ内にあるすべてのマイグレーションファイルを適用し、データベースの構造を最新の状態に更新します。これにより、必要なテーブルや列がデータベースに作成されます。
+    rails db:migrate

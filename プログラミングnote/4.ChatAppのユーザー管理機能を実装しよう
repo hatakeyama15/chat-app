@@ -1,0 +1,147 @@
+1.deviceのインストール
+  ・ Gemfileにdeviseを記述する
+    Gemfileを開き末尾にgem 'devise'を記述
+  ・bundle installを行う
+    ターミナル： bundle install
+  ・rails s でサーバーの再起動
+  ・ コマンドでdeviseのインストールを行う
+    ターミナル： rails g devise:install
+  以下の2つのファイルを作成することができれば成功です。
+  config/initializers/devise.rb
+  config/locales/devise.en.yml
+
+  2.userモデルの作成
+    ・ターミナルで下記コマンドを実行
+    ターミナル：      rails g devise user
+  
+  3.マイグレートファイルでカラムの追加（db/migrate/20XXXXXXXXXXXX_devise_create_users.rb）
+  ・下記コードを7行目に追加（change関数の中）
+    t.string :name,               null: false
+    ※ null: falseと記述することにより、マイグレーション実行時に「nameカラム」は空の値を許可しないNOT NULL制約で作成されます。
+  ・ターミナルで反映する
+    ターミナル：        rails db:migrate
+
+    4.deviseのビュー
+    ・ダウンロードして展開する
+    ・use-materialsフォルダを開けたらOK
+    ・chat-appフォルダのdeviceフォルダ・usersフォルダを「app/views」に移動
+    ・chat-appフォルダのuser.cssも「app/assets/stylesheets」の下に配置しましょう
+
+    5.サインアップ・ログイン機能を実装
+    authenticate_user!（オウセンティケイト ユーザー）メソッド
+      ログイン状態によって表示するページを切り替えるdeviseのメソッドです。
+      ログインしていなければログイン画面に戻す
+
+    ・ログイン画面に遷移するように実装しましょう（app/controllers/application_controller.rb）
+      class ApplicationController < ActionController::Base
+        before_action :authenticate_user! # ログインしていなければログイン前に戻す
+      end
+      訳）before_action：事前に実行 authenticate_user!  ログイン確認を
+
+      ・ユーザーの名前をDBへ保存できるように設定しましょう
+        application_controller.rbファイルにnameカラムの保存ができるよう記述しましょう
+        class ApplicationController < ActionController::Base
+          before_action :authenticate_user!
+          before_action :configure_permitted_parameters, if: :devise_controller? # 追加
+          →訳）configure_permitted_parametersメソッドを呼び出す
+
+          private # 追加
+          def configure_permitted_parameters # 追加
+            devise_parameter_sanitizer.permit(:sign_up, keys: [:name]) # 追加
+          end
+        end
+      
+      6.ユーザー情報編集機能
+        ・ユーザー編集画面が表示されるように、ルーティングとコントローラーを編集しましょう
+        6-1. ルーティング（config/routes.rb）
+          Rails.application.routes.draw do
+            devise_for :users
+            root to: "messages#index"
+            # ユーザー編集に必要なルーティングは、editとupdate
+            resources :users, only: [:edit, :update] # 追加
+
+          end
+        6-2. usersコントローラーの作成
+          ターミナル：rails g controller users
+        6-3. コントローラーの編集（app/controllers/users_controller.rb）
+          class UsersController < ApplicationController
+
+              def edit # 追加
+              end     # 追加
+
+            end
+        
+        6-4. 編集内容が更新されるように、コントローラーを編集しましょう
+        ・下記コードを追加
+          def update
+            current_user.update(user_params)  # user_paramsメソッドの呼び出し
+                                              # ユーザー情報が格納されているcurrent_userメソッドを使用して、ログインしているユーザーの情報を更新します
+          end
+
+          private
+          def user_params
+            params.require(:user).permit(:name, :email) # 「name」と「email」の編集を許可します。
+          end
+
+          renderメソッド：renderは、呼び出すビューファイルを指定するメソッドです。
+
+        6-5. 更新成功後にページ遷移が行われるように実装しましょう（app/controllers/users_controller.rb）
+          updateメソッドの中に下記コードを記述
+          if current_user.update(user_params)
+            redirect_to root_path
+          else
+            render :edit, status: :unprocessable_entity
+          end
+        7. サイドバーからユーザー編集ページへ遷移できるように実装しましょう（app/views/messages/_side_bar.html.erb）
+          <div class="side-bar-header">
+            <div class="header-name">
+              <%= link_to current_user.name, edit_user_path(current_user) %>  # 追加
+            </div>
+            <div class="create-room">
+              <a href="#">チャットを作成する</a>
+            </div>
+          </div>
+
+        8.ログアウト機能を実装しよう
+          ・ユーザー編集画面からログアウトできるようにしましょう（app/views/users/edit.html.erb）
+            ・ログアウト機能を実装しましょう
+            チャットページに戻るの上の行に下記コードを追加
+            <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: 'btn'%>
+
+        9.ユーザー情報入力にバリデーションを設定しましょう(app/models/user.rb)
+          ・バリデーションを設定しましょう
+          下記コードをendの前に追加する
+            validates :name, presence: true
+            # name」カラムに、presence: trueを設けることで、空の場合はDBに保存しないというバリデーションを設定しています。
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+    
+
+    
+
