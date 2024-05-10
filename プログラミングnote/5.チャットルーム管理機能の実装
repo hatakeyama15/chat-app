@@ -38,16 +38,85 @@
     control + c でサーバー停止
     ターミナル：        rails s
 
-  6.多対多のアソシエーションを記述
-    ・roomsモデルの編集（app/models/room.rb）
-      has_many :room_users
-      has_many :users, through: :room_users
-    ・usersモデル編集（app/models/user.rb）
-      has_many :room_users
-      has_many :rooms, through: :room_users
-    ・room_userモデル（中間テーブル）を編集（app/models/room_user.rb）
-      belongs_to :room
-      belongs_to :user
+6.多対多のアソシエーションを記述
+  ・roomsモデルの編集（app/models/room.rb）
+    has_many :room_users
+    has_many :users, through: :room_users
+  ・usersモデル編集（app/models/user.rb）
+    has_many :room_users
+    has_many :rooms, through: :room_users
+  ・room_userモデル（中間テーブル）を編集（app/models/room_user.rb）
+    belongs_to :room
+    belongs_to :user
+
+7.コンソールでデータを追加
+  ・コンソールを起動
+    ターミナル：          rails c
+
+8.データを保存
+  ・以下のコマンドをコンソール上で実行します。
+    user_idsというキー、そしてその値に配列を指定する特殊な記述です。
+    コンソール上：        Room.create(name: "ルーム１", user_ids: [1, 2])
+    書籍）プルダウンは、select要素とoption要素を使用して実装します。
+        select（セレクト）要素
+          プルダウンのようなセレクトボックスを作成するための要素です。
+          select要素のname属性に任意の値を指定することで、paramsを通して、
+          その値をコントローラーへ渡すことができます
+        option（オプション）要素
+          select要素の中に記述することで、プルダウンの選択肢になる要素です。
+
+9.プルダウンを実装
+  ・新規チャットルーム作成画面のビューを以下のように編集してください。（app/views/rooms/new.html.erb）
+        <div class='chat-room-form__field--right'>
+          <select>
+            <option>チャットするユーザーを選択してください</option>
+            <option>ユーザー1</option>
+            <option>ユーザー2</option>
+            </select>
+      </div>
+
+10.DB上のデータを取得
+  ビューファイル上で、DBに管理されているユーザーすべてのレコードをUserクラスから取得して、
+  それぞれ1つずつユーザー名を表示させる実装を行います。（app/views/rooms/new.html.erb）
+  <select></select>の中を編集
+    <option value="">チャットするユーザーを選択してください</option>
+            <% User.all.each do |user| %>
+              <option><%= user.name %></option>
+            <% end %>
+
+11.選択肢から現在ログインしているユーザー名を取り除きましょう
+  ・以下を編集（app/views/rooms/new.html.erb）
+        <select>
+          <option value="">チャットするユーザーを選択してください</option>
+            <% User.where.not(id: current_user.id).each do |user| %>
+              <option><%= user.name %></option>
+            <% end %>
+        </select>
+
+12.コントローラーへ送る値を指定する
+  ・以下のように編集（app/views/rooms/new.html.erb）
+  <select name="room[user_ids][]">  #編集
+    <option value="">チャットするユーザーを選択してください</option>
+      <% User.where.not(id: current_user.id).each do |user| %>
+    <option value=<%= user.id %>><%= user.name %></option>  #編集
+
+13.パラメーターにログイン中ユーザーのidも含めましょう
+  ・以下のようにnew.html.erbを記述してください。（app/views/rooms/new.html.erb）
+  <select name="room[user_ids][]">
+    <option value="">チャットするユーザーを選択してください</option>
+    <% User.where.not(id: current_user.id).each do |user| %>
+      <option value=<%=user.id%>><%= user.name %></option>
+    <% end %>
+  </select>
+  <input name="room[user_ids][]" type="hidden" value=<%= current_user.id %>>
+
+
+
+
+
+
+
+
 
 
 
