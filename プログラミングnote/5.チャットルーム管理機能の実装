@@ -22,6 +22,35 @@
 4.ルーティングの設定(config/routes.rb)
   ・resources :rooms, only: [:new, :create]を追加
 
+5.中間テーブルの作成
+  ・モデルを作成
+    ターミナル：        rails g model room_user
+  書籍）references（リファレンシーズ）型（t.references :カラム名）
+       外部キーのカラムを追加する際に、用いる型のことです。
+       t.references :userと記載すれば、user_idというカラムが生成
+       foreign_key: trueという記述を加えることで、外部キー制約を設定
+  ・中間テーブルに外部キーの設定をする（db/migrate/20XXXXXXXXXXXX_create_room_users.rb）
+      t.references :room, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true
+  ・DBに反映する
+      ターミナル：        rails db:migrate
+  ・ローカルサーバーを再起動する
+    control + c でサーバー停止
+    ターミナル：        rails s
+
+  6.多対多のアソシエーションを記述
+    ・roomsモデルの編集（app/models/room.rb）
+      has_many :room_users
+      has_many :users, through: :room_users
+    ・usersモデル編集（app/models/user.rb）
+      has_many :room_users
+      has_many :rooms, through: :room_users
+    ・room_userモデル（中間テーブル）を編集（app/models/room_user.rb）
+      belongs_to :room
+      belongs_to :user
+
+
+
 
 
 
