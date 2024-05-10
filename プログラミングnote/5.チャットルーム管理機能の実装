@@ -146,7 +146,29 @@
   ・roomモデルを以下のように編集しましょう。
     validates :name, presence: true ＃追加
 
-    
+18.チャット画面の編集
+  ・サイドバーにチャットルーム名が表示されるようにしましょう（app/views/messages/_side_bar.html.erb）
+    <div class="rooms">内に下記コードを追加する
+      % current_user.rooms.each do |room| %>
+      <div class="room">
+        <div class="room-name">
+          <a href="#"><%= room.name %></a>
+        </div>
+      </div>
+    <% end %>
+  ・サイドバーのボタンからチャットルーム新規作成画面へ遷移するように編集しましょう
+  ターミナル：        rails routes  # リンクの確認
+  ・ビューファイルを以下のように編集しましょう。（app/views/messages/_side_bar.html.erb）
+  <div class="create-room">
+    <%= link_to "チャットを作成する", new_room_path %>
+  </div>
+
+
+
+
+
+
+
 
 
 
