@@ -10,4 +10,19 @@
       t.string :name, null: false
   ・DBに反映する
   ターミナル：        rails db:migrate
-  
+
+3.コントローラーの実装
+・コントローラーの作成
+  ・ターミナル：        rails g controller rooms
+  ・ファイルを編集 （app/controllers/rooms_controller.rb）
+    def new
+      @room = Room.new
+    end
+
+4.ルーティングの設定(config/routes.rb)
+  ・resources :rooms, only: [:new, :create]を追加
+
+
+
+
+
