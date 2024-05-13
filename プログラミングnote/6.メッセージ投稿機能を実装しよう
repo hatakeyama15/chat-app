@@ -1,0 +1,21 @@
+1.Messageモデルを作成しよう
+  ターミナル：        rails g model message
+  ファイルを生成したら（db/migrate/20XXXXXXXXXXXX_create_message.rb）に下記コードを記載
+    t.string  :content
+    t.references :room, null: false, foreign_key: true  # 空はNG 外部キー制約
+    t.references :user, null: false, foreign_key: true
+  マイグレーションで反映する
+  ターミナル：        rails db:migrate
+
+  2.アソシエーションを記述（１対多とか）
+    ・app/models/message.rb 追加
+      belongs_to :room  # roomは一つ
+      belongs_to :user  # userは一人
+    ・app/models/room.rb 追加# messageは複数
+      has_many :messages
+    ・app/models/user.rb 追加 # messageは複数
+      has_many :messages
+
+      
+
+    
