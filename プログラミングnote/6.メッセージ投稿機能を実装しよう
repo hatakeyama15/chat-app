@@ -15,7 +15,42 @@
       has_many :messages
     ・app/models/user.rb 追加 # messageは複数
       has_many :messages
+  
+  3.ルーティングを記述
+  。編集する（config/routes.rb）
+    devise_for :users
+    root to: "rooms#index"
+    resources :users, only: [:edit, :update]
+    resources :rooms, only: [:new, :create] do
+      resources :messages, only: [:index, :create]
+    end
+  ・<a>を消して下記を追加する（app/views/messages/_side_bar.html.erb）
+    <div class="room-name">
+        <%= link_to room.name, room_messages_path(room) %>
+    </div>
 
-      
+  4.form_withを用いてビューファイルを編集しましょう
+    ・_main_chat.html.erbファイルを開き、以下のように記述してください。（app/views/messages/_main_chat.html.erb）
+    <div class="messages">
+      中略
+    </div>
 
-    
+    <%= form_with model: [@room, @message], html: {class: "form"}, local: true do |f|%>
+      <div class="form-input">
+        <%= f.text_field :content, class: 'form-message', placeholder: 'type a message' %>
+        <label class="form-image">
+          <span class="image-file">画像</span>
+          <%= f.file_field :image, class: 'hidden' %>
+        </label>
+      </div>
+      <%= f.submit '送信', class: 'form-submit' %>
+    <% end %>
+
+5.form_withに必要な情報を取得しましょう（app/controllers/messages_controller.rb）
+  ・indexに追加する
+  def index
+    @message = Message.new
+    @room = Room.find(params[:room_id])
+  end
+
+  
